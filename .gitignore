@@ -3,8 +3,9 @@
 .env.local
 .env.production
 
-# Dependencies (if npm ever used)
+# Dependencies
 node_modules/
+package-lock.json
 
 # Build output
 dist/
