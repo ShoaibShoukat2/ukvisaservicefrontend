@@ -1,33 +1,33 @@
-const { useState, useEffect } = React;
+import { useState, useEffect } from 'react'
 
-const API_BASE = window.APP_CONFIG?.API_BASE_URL || "http://localhost:8000/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
 
-// ─── useSiteData hook — fetches config + products once ────────────────────────
+// ─── useSiteData hook ─────────────────────────────────────────────────────────
 function useSiteData() {
-  const [config, setConfig] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [config, setConfig] = useState(null)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/config/`).then(r => { if (!r.ok) throw new Error(); return r.json(); }),
-      fetch(`${API_BASE}/products/`).then(r => { if (!r.ok) throw new Error(); return r.json(); }),
+      fetch(`${API_BASE}/config/`).then(r => { if (!r.ok) throw new Error(); return r.json() }),
+      fetch(`${API_BASE}/products/`).then(r => { if (!r.ok) throw new Error(); return r.json() }),
     ])
       .then(([cfg, prods]) => {
-        setConfig(cfg);
-        setProducts(prods.map(p => ({ ...p, price: parseFloat(p.price) })));
+        setConfig(cfg)
+        setProducts(prods.map(p => ({ ...p, price: parseFloat(p.price) })))
       })
-      .catch(() => setError("Cannot connect to backend. Make sure it is running on port 8000."))
-      .finally(() => setLoading(false));
-  }, []);
+      .catch(() => setError('Cannot connect to backend. Make sure it is running.'))
+      .finally(() => setLoading(false))
+  }, [])
 
-  return { config, products, loading, error };
+  return { config, products, loading, error }
 }
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 function Navbar({ siteName, tagline, cartCount, onCartClick }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false)
   return (
     <nav className="bg-[#003078] text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -63,7 +63,7 @@ function Navbar({ siteName, tagline, cartCount, onCartClick }) {
         </div>
       )}
     </nav>
-  );
+  )
 }
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ function Hero({ config }) {
     { value: config.stat_1_value, label: config.stat_1_label },
     { value: config.stat_2_value, label: config.stat_2_label },
     { value: config.stat_3_value, label: config.stat_3_label },
-  ];
+  ]
   return (
     <section id="home" className="bg-gradient-to-br from-[#003078] via-[#004aad] to-[#0066cc] text-white py-24 px-4">
       <div className="max-w-5xl mx-auto text-center">
@@ -80,7 +80,7 @@ function Hero({ config }) {
           Official UKVI Fee Payment Portal
         </div>
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          {config.hero_title.split('Fee Payment').length > 1 ? (
+          {config.hero_title.includes('Fee Payment') ? (
             <>
               {config.hero_title.split('Fee Payment')[0]}
               <span className="text-[#f3a712]">Fee Payment</span>
@@ -88,16 +88,10 @@ function Hero({ config }) {
             </>
           ) : config.hero_title}
         </h1>
-        <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-          {config.hero_subtitle}
-        </p>
+        <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">{config.hero_subtitle}</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#products" className="bg-[#f3a712] hover:bg-yellow-400 text-[#003078] font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg">
-            View Fee Options →
-          </a>
-          <a href="#services" className="border-2 border-white hover:bg-white hover:text-[#003078] text-white font-bold px-8 py-4 rounded-xl text-lg transition">
-            Learn More
-          </a>
+          <a href="#products" className="bg-[#f3a712] hover:bg-yellow-400 text-[#003078] font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg">View Fee Options →</a>
+          <a href="#services" className="border-2 border-white hover:bg-white hover:text-[#003078] text-white font-bold px-8 py-4 rounded-xl text-lg transition">Learn More</a>
         </div>
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto text-center">
           {stats.map((s, i) => (
@@ -109,17 +103,17 @@ function Hero({ config }) {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // ─── Services ─────────────────────────────────────────────────────────────────
 function Services() {
   const items = [
-    { icon: "🛂", title: "Visa Fee Payment", desc: "Pay your UK visa application fee quickly and securely online." },
-    { icon: "🏥", title: "IHS Payment", desc: "Immigration Health Surcharge — access NHS services during your stay." },
-    { icon: "🔒", title: "Secure Transactions", desc: "All payments are encrypted and processed via trusted gateways." },
-    { icon: "📧", title: "Instant Confirmation", desc: "Receive your payment receipt instantly via email." },
-  ];
+    { icon: '🛂', title: 'Visa Fee Payment', desc: 'Pay your UK visa application fee quickly and securely online.' },
+    { icon: '🏥', title: 'IHS Payment', desc: 'Immigration Health Surcharge — access NHS services during your stay.' },
+    { icon: '🔒', title: 'Secure Transactions', desc: 'All payments are encrypted and processed via trusted gateways.' },
+    { icon: '📧', title: 'Instant Confirmation', desc: 'Receive your payment receipt instantly via email.' },
+  ]
   return (
     <section id="services" className="py-20 bg-gray-50 px-4">
       <div className="max-w-6xl mx-auto">
@@ -138,7 +132,7 @@ function Services() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
@@ -157,25 +151,20 @@ function ProductCard({ product, onAddToCart }) {
         <p className="text-gray-500 text-sm mb-4 flex-1">{product.description}</p>
         <div className="flex items-center justify-between mt-auto">
           <span className="text-3xl font-extrabold text-[#003078]">£{product.price.toLocaleString()}</span>
-          <button
-            onClick={() => onAddToCart(product)}
-            className="bg-[#003078] hover:bg-[#004aad] text-white font-semibold px-5 py-2 rounded-xl transition text-sm"
-          >
+          <button onClick={() => onAddToCart(product)} className="bg-[#003078] hover:bg-[#004aad] text-white font-semibold px-5 py-2 rounded-xl transition text-sm">
             Add to Cart
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ─── Products Section ─────────────────────────────────────────────────────────
 function ProductsSection({ products, onAddToCart }) {
-  const [filter, setFilter] = useState("All");
-
-  // Build category list dynamically from products
-  const categories = ["All", ...Array.from(new Set(products.map(p => p.category_display)))];
-  const filtered = filter === "All" ? products : products.filter(p => p.category_display === filter);
+  const [filter, setFilter] = useState('All')
+  const categories = ['All', ...Array.from(new Set(products.map(p => p.category_display)))]
+  const filtered = filter === 'All' ? products : products.filter(p => p.category_display === filter)
 
   return (
     <section id="products" className="py-20 bg-white px-4">
@@ -186,28 +175,23 @@ function ProductsSection({ products, onAddToCart }) {
         </div>
         <div className="flex justify-center gap-3 mb-10 flex-wrap">
           {categories.map(c => (
-            <button
-              key={c}
-              onClick={() => setFilter(c)}
-              className={`px-5 py-2 rounded-full font-semibold text-sm transition ${filter === c ? 'bg-[#003078] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-            >
+            <button key={c} onClick={() => setFilter(c)}
+              className={`px-5 py-2 rounded-full font-semibold text-sm transition ${filter === c ? 'bg-[#003078] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {c}
             </button>
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map(p => (
-            <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} />
-          ))}
+          {filtered.map(p => <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} />)}
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // ─── Cart Modal ───────────────────────────────────────────────────────────────
 function CartModal({ cart, onClose, onRemove, onCheckout }) {
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0)
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
@@ -249,49 +233,46 @@ function CartModal({ cart, onClose, onRemove, onCheckout }) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ─── Checkout Modal ───────────────────────────────────────────────────────────
 function CheckoutModal({ cart, onClose, onSuccess }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const [form, setForm] = useState({ name: '', email: '', phone: '' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    e.preventDefault()
+    setLoading(true)
+    setError('')
     try {
       const res = await fetch(`${API_BASE}/orders/create/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customer_name: form.name,
           customer_email: form.email,
           customer_phone: form.phone,
           items: cart.map(i => ({ product_id: i.id, quantity: i.qty })),
         }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Order creation failed. Please try again.");
-        return;
-      }
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Order creation failed.'); return }
       if (data.payment_url) {
-        window.location.href = data.payment_url;
+        window.location.href = data.payment_url
       } else if (data.order_id) {
-        onSuccess(data.order_id);
+        onSuccess(data.order_id)
       } else {
-        setError("Unexpected response from server.");
+        setError('Unexpected response from server.')
       }
     } catch {
-      setError("Cannot connect to server. Make sure backend is running on port 8000.");
+      setError('Cannot connect to server.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -302,9 +283,9 @@ function CheckoutModal({ cart, onClose, onSuccess }) {
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {[
-            { label: "Full Name", key: "name", type: "text", placeholder: "John Smith" },
-            { label: "Email Address", key: "email", type: "email", placeholder: "john@example.com" },
-            { label: "Phone Number", key: "phone", type: "tel", placeholder: "+44 7700 000000" },
+            { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Smith' },
+            { label: 'Email Address', key: 'email', type: 'email', placeholder: 'john@example.com' },
+            { label: 'Phone Number', key: 'phone', type: 'tel', placeholder: '+44 7700 000000' },
           ].map(f => (
             <div key={f.key}>
               <label className="block text-sm font-semibold text-gray-600 mb-1">{f.label}</label>
@@ -321,13 +302,13 @@ function CheckoutModal({ cart, onClose, onSuccess }) {
           {error && <div className="bg-red-50 text-[#d4351c] text-sm rounded-xl p-3">{error}</div>}
           <button type="submit" disabled={loading}
             className="w-full bg-[#003078] hover:bg-[#004aad] disabled:opacity-60 text-white font-bold py-4 rounded-xl transition text-lg">
-            {loading ? "Processing..." : "Pay Now 🔒"}
+            {loading ? 'Processing...' : 'Pay Now 🔒'}
           </button>
           <p className="text-center text-xs text-gray-400">🔒 Secured by Stripe. Your data is safe.</p>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
 // ─── Success Banner ───────────────────────────────────────────────────────────
@@ -344,17 +325,17 @@ function SuccessBanner({ orderId, onClose }) {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 // ─── Trust Bar ────────────────────────────────────────────────────────────────
 function TrustBar() {
   const items = [
-    { icon: "🔒", label: "SSL Encrypted" },
-    { icon: "🏦", label: "Stripe Secured" },
-    { icon: "📋", label: "UKVI Compliant" },
-    { icon: "⚡", label: "Instant Receipt" },
-  ];
+    { icon: '🔒', label: 'SSL Encrypted' },
+    { icon: '🏦', label: 'Stripe Secured' },
+    { icon: '📋', label: 'UKVI Compliant' },
+    { icon: '⚡', label: 'Instant Receipt' },
+  ]
   return (
     <section className="bg-[#003078] text-white py-10 px-4">
       <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -366,16 +347,16 @@ function TrustBar() {
         ))}
       </div>
     </section>
-  );
+  )
 }
 
 // ─── Contact ──────────────────────────────────────────────────────────────────
 function Contact({ config }) {
   const items = [
-    { icon: "📧", title: "Email Us", value: config.contact_email },
-    { icon: "📞", title: "Call Us", value: config.contact_phone },
-    { icon: "💬", title: "Live Chat", value: "Available 24/7" },
-  ];
+    { icon: '📧', title: 'Email Us', value: config.contact_email },
+    { icon: '📞', title: 'Call Us', value: config.contact_phone },
+    { icon: '💬', title: 'Live Chat', value: 'Available 24/7' },
+  ]
   return (
     <section id="contact" className="py-20 bg-gray-50 px-4">
       <div className="max-w-4xl mx-auto text-center">
@@ -392,7 +373,7 @@ function Contact({ config }) {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
@@ -417,10 +398,10 @@ function Footer({ config }) {
         </div>
       </div>
     </footer>
-  );
+  )
 }
 
-// ─── Loading Screen ───────────────────────────────────────────────────────────
+// ─── Loading / Error ──────────────────────────────────────────────────────────
 function LoadingScreen() {
   return (
     <div className="min-h-screen bg-[#003078] flex items-center justify-center">
@@ -429,10 +410,9 @@ function LoadingScreen() {
         <div className="text-xl font-bold">Loading UKVI Services...</div>
       </div>
     </div>
-  );
+  )
 }
 
-// ─── Error Screen ─────────────────────────────────────────────────────────────
 function ErrorScreen({ message }) {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -445,45 +425,41 @@ function ErrorScreen({ message }) {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
-function App() {
-  const { config, products, loading, error } = useSiteData();
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [successOrderId, setSuccessOrderId] = useState(null);
+export default function App() {
+  const { config, products, loading, error } = useSiteData()
+  const [cart, setCart] = useState([])
+  const [showCart, setShowCart] = useState(false)
+  const [showCheckout, setShowCheckout] = useState(false)
+  const [successOrderId, setSuccessOrderId] = useState(null)
 
-  if (loading) return <LoadingScreen />;
-  if (error) return <ErrorScreen message={error} />;
+  if (loading) return <LoadingScreen />
+  if (error) return <ErrorScreen message={error} />
 
   const addToCart = (product) => {
     setCart(prev => {
-      const existing = prev.find(i => i.id === product.id);
-      if (existing) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
-      return [...prev, { ...product, qty: 1 }];
-    });
-  };
+      const existing = prev.find(i => i.id === product.id)
+      if (existing) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i)
+      return [...prev, { ...product, qty: 1 }]
+    })
+  }
 
-  const removeFromCart = (id) => setCart(prev => prev.filter(i => i.id !== id));
+  const removeFromCart = (id) => setCart(prev => prev.filter(i => i.id !== id))
 
   const handleSuccess = (orderId) => {
-    setCart([]);
-    setShowCheckout(false);
-    setShowCart(false);
-    setSuccessOrderId(orderId);
-  };
+    setCart([])
+    setShowCheckout(false)
+    setShowCart(false)
+    setSuccessOrderId(orderId)
+  }
 
   return (
     <div className="min-h-screen font-sans">
-      <Navbar
-        siteName={config.site_name}
-        tagline={config.site_tagline}
-        cartCount={cart.reduce((s, i) => s + i.qty, 0)}
-        onCartClick={() => setShowCart(true)}
-      />
+      <Navbar siteName={config.site_name} tagline={config.site_tagline}
+        cartCount={cart.reduce((s, i) => s + i.qty, 0)} onCartClick={() => setShowCart(true)} />
       <Hero config={config} />
       <Services />
       <ProductsSection products={products} onAddToCart={addToCart} />
@@ -491,26 +467,10 @@ function App() {
       <Contact config={config} />
       <Footer config={config} />
 
-      {showCart && (
-        <CartModal
-          cart={cart}
-          onClose={() => setShowCart(false)}
-          onRemove={removeFromCart}
-          onCheckout={() => { setShowCart(false); setShowCheckout(true); }}
-        />
-      )}
-      {showCheckout && (
-        <CheckoutModal
-          cart={cart}
-          onClose={() => setShowCheckout(false)}
-          onSuccess={handleSuccess}
-        />
-      )}
-      {successOrderId && (
-        <SuccessBanner orderId={successOrderId} onClose={() => setSuccessOrderId(null)} />
-      )}
+      {showCart && <CartModal cart={cart} onClose={() => setShowCart(false)}
+        onRemove={removeFromCart} onCheckout={() => { setShowCart(false); setShowCheckout(true) }} />}
+      {showCheckout && <CheckoutModal cart={cart} onClose={() => setShowCheckout(false)} onSuccess={handleSuccess} />}
+      {successOrderId && <SuccessBanner orderId={successOrderId} onClose={() => setSuccessOrderId(null)} />}
     </div>
-  );
+  )
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
