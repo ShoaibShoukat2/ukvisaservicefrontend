@@ -6,8 +6,8 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api
 async function apiFetch(url, options = {}) {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 15000)
-  const token = localStorage.getItem('access_token')
-  const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers }
+  const token = localStorage.getItem('auth_token')
+  const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Token ${token}` } : {}), ...options.headers }
   try {
     const res = await fetch(url, { ...options, headers, signal: controller.signal })
     clearTimeout(timeout)
@@ -34,20 +34,15 @@ function AuthProvider({ children }) {
     try { return JSON.parse(localStorage.getItem('user')) } catch { return null }
   })
 
-  const login = (userData, access, refresh) => {
-    localStorage.setItem('access_token', access)
-    localStorage.setItem('refresh_token', refresh)
+  const login = (userData, token) => {
+    localStorage.setItem('auth_token', token)
     localStorage.setItem('user', JSON.stringify(userData))
     setUser(userData)
   }
 
   const logout = async () => {
-    try {
-      const refresh = localStorage.getItem('refresh_token')
-      if (refresh) await apiFetch(`${API_BASE}/auth/logout/`, { method: 'POST', body: JSON.stringify({ refresh }) })
-    } catch {}
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+    try { await apiFetch(`${API_BASE}/auth/logout/`, { method: 'POST' }) } catch {}
+    localStorage.removeItem('auth_token')
     localStorage.removeItem('user')
     setUser(null)
   }
@@ -188,7 +183,7 @@ function LoginPage({ onNavigate, onToast }) {
     e.preventDefault(); setLoading(true); setError('')
     try {
       const data = await apiFetch(`${API_BASE}/auth/login/`, { method: 'POST', body: JSON.stringify(form) })
-      login(data.user, data.access, data.refresh)
+      login(data.user, data.token)
       onToast('Welcome back! 👋', 'success')
       onNavigate('home')
     } catch (err) { setError(err.message) } finally { setLoading(false) }
@@ -241,7 +236,7 @@ function RegisterPage({ onNavigate, onToast }) {
     setLoading(true); setError('')
     try {
       const data = await apiFetch(`${API_BASE}/auth/register/`, { method: 'POST', body: JSON.stringify(form) })
-      login(data.user, data.access, data.refresh)
+      login(data.user, data.token)
       onToast('Account created successfully! 🎉', 'success')
       onNavigate('home')
     } catch (err) { setError(err.message) } finally { setLoading(false) }
