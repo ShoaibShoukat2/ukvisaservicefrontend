@@ -11,7 +11,7 @@ React + Vite + Tailwind CSS frontend for the UKVI Services fee payment portal.
 
 ## Features
 
-- Browse UK Visa & IHS fee options
+- Browse UK visa service packages (5, 7, 10-day & Premium)
 - User registration & login
 - Shopping cart & Stripe checkout
 - My Orders — view order history
@@ -75,7 +75,7 @@ frontend/
 | Endpoint | Description |
 |---|---|
 | `GET /api/config/` | Site configuration |
-| `GET /api/products/` | Fee options |
+| `GET /api/products/` | Service packages |
 | `POST /api/auth/register/` | Register |
 | `POST /api/auth/login/` | Login |
 | `POST /api/auth/logout/` | Logout |

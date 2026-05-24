@@ -110,7 +110,7 @@ function Navbar({ siteName, tagline, cartCount, onCartClick, onNavigate }) {
         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
           <button onClick={() => onNavigate('home')} className="hover:text-[#f3a712] transition">Home</button>
           <a href="#services" className="hover:text-[#f3a712] transition">Services</a>
-          <a href="#products" className="hover:text-[#f3a712] transition">Fees</a>
+          <a href="#products" className="hover:text-[#f3a712] transition">Packages</a>
           <a href="#contact" className="hover:text-[#f3a712] transition">Contact</a>
         </div>
 
@@ -152,7 +152,7 @@ function Navbar({ siteName, tagline, cartCount, onCartClick, onNavigate }) {
         <div className="md:hidden bg-[#002060] px-4 pb-4 flex flex-col gap-3 text-sm font-medium">
           <button onClick={() => { onNavigate('home'); setMenuOpen(false) }} className="text-left hover:text-[#f3a712]">Home</button>
           <a href="#services" className="hover:text-[#f3a712]">Services</a>
-          <a href="#products" className="hover:text-[#f3a712]">Fees</a>
+          <a href="#products" className="hover:text-[#f3a712]">Packages</a>
           <a href="#contact" className="hover:text-[#f3a712]">Contact</a>
           {user ? (
             <>
@@ -390,7 +390,7 @@ function MyOrdersPage({ onNavigate }) {
             <div className="text-6xl mb-4">📭</div>
             <h2 className="text-xl font-bold text-[#003078] mb-2">No orders yet</h2>
             <p className="text-gray-500 mb-6">You haven't placed any orders yet.</p>
-            <button onClick={() => onNavigate('home')} className="bg-[#003078] text-white font-bold px-8 py-3 rounded-xl hover:bg-[#004aad] transition">Browse Fee Options</button>
+            <button onClick={() => onNavigate('home')} className="bg-[#003078] text-white font-bold px-8 py-3 rounded-xl hover:bg-[#004aad] transition">Browse Packages</button>
           </div>
         )}
         <div className="space-y-4">
@@ -483,15 +483,15 @@ function Hero({ config }) {
   return (
     <section id="home" className="bg-gradient-to-br from-[#003078] via-[#004aad] to-[#0066cc] text-white py-24 px-4">
       <div className="max-w-5xl mx-auto text-center">
-        <div className="inline-block bg-[#f3a712] text-[#003078] text-xs font-bold px-4 py-1 rounded-full mb-6 uppercase tracking-widest">Official UKVI Fee Payment Portal</div>
+        <div className="inline-block bg-[#f3a712] text-[#003078] text-xs font-bold px-4 py-1 rounded-full mb-6 uppercase tracking-widest">Official UKVI Service Packages</div>
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          {config.hero_title.includes('Fee Payment') ? (
-            <>{config.hero_title.split('Fee Payment')[0]}<span className="text-[#f3a712]">Fee Payment</span>{config.hero_title.split('Fee Payment')[1]}</>
+          {config.hero_title.includes('Packages') ? (
+            <>{config.hero_title.split('Packages')[0]}<span className="text-[#f3a712]">Packages</span>{config.hero_title.split('Packages')[1]}</>
           ) : config.hero_title}
         </h1>
         <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">{config.hero_subtitle}</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#products" className="bg-[#f3a712] hover:bg-yellow-400 text-[#003078] font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg">View Fee Options →</a>
+          <a href="#products" className="bg-[#f3a712] hover:bg-yellow-400 text-[#003078] font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg">View Packages →</a>
           <a href="#services" className="border-2 border-white hover:bg-white hover:text-[#003078] text-white font-bold px-8 py-4 rounded-xl text-lg transition">Learn More</a>
         </div>
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto text-center">
@@ -506,17 +506,17 @@ function Hero({ config }) {
 
 function Services() {
   const items = [
-    { icon: '🛂', title: 'Visa Fee Payment', desc: 'Pay your UK visa application fee quickly and securely online.' },
-    { icon: '🏥', title: 'IHS Payment', desc: 'Immigration Health Surcharge — access NHS services during your stay.' },
+    { icon: '✈️', title: '5 & 7 Days Packages', desc: 'Flexible turnaround options for standard and priority applications.' },
+    { icon: '🛂', title: '10 Days Package', desc: 'Extended processing window for more complex visa applications.' },
+    { icon: '⚡', title: 'Premium Package', desc: 'Fastest service with dedicated support and expedited handling.' },
     { icon: '🔒', title: 'Secure Transactions', desc: 'All payments are encrypted and processed via trusted gateways.' },
-    { icon: '📧', title: 'Instant Confirmation', desc: 'Receive your payment receipt instantly via email.' },
   ]
   return (
     <section id="services" className="py-20 bg-gray-50 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#003078] mb-3">Our Services</h2>
-          <p className="text-gray-500 max-w-xl mx-auto">Everything you need to complete your UK visa application fees in one place.</p>
+          <p className="text-gray-500 max-w-xl mx-auto">Choose the package that fits your timeline and complete your payment in one place.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((s, i) => (
@@ -560,8 +560,8 @@ function ProductsSection({ products, onAddToCart }) {
     <section id="products" className="py-20 bg-white px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#003078] mb-3">Fee Options</h2>
-          <p className="text-gray-500 max-w-xl mx-auto">Select the fee type that applies to your application and add it to your cart.</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#003078] mb-3">Our Packages</h2>
+          <p className="text-gray-500 max-w-xl mx-auto">Select the package that fits your application timeline and add it to your cart.</p>
         </div>
         <div className="flex justify-center gap-3 mb-10 flex-wrap">
           {categories.map(c => (
@@ -569,7 +569,7 @@ function ProductsSection({ products, onAddToCart }) {
               className={`px-5 py-2 rounded-full font-semibold text-sm transition ${filter === c ? 'bg-[#003078] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{c}</button>
           ))}
         </div>
-        {products.length === 0 && <div className="text-center py-16 text-gray-400"><div className="text-5xl mb-3">📋</div><p>No fee options available.</p></div>}
+        {products.length === 0 && <div className="text-center py-16 text-gray-400"><div className="text-5xl mb-3">📋</div><p>No packages available.</p></div>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(p => <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} />)}
         </div>
