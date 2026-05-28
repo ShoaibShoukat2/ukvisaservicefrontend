@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+const INR_FORMATTER = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 })
+
+function formatINR(amount) {
+  return INR_FORMATTER.format(Number(amount) || 0)
+}
 
 // ─── API Helper ───────────────────────────────────────────────────────────────
 async function apiFetch(url, options = {}) {
@@ -405,14 +410,14 @@ function MyOrdersPage({ onNavigate }) {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-gray-100 text-gray-600'}`}>
                     {order.status_display}
                   </span>
-                  <span className="text-xl font-extrabold text-[#003078]">£{parseFloat(order.total_amount).toLocaleString()}</span>
+                  <span className="text-xl font-extrabold text-[#003078]">{formatINR(order.total_amount)}</span>
                 </div>
               </div>
               <div className="border-t pt-4 space-y-2">
                 {order.items.map((item, i) => (
                   <div key={i} className="flex justify-between text-sm">
                     <span className="text-gray-600">{item.product_icon} {item.product_name} × {item.quantity}</span>
-                    <span className="font-semibold text-[#003078]">£{parseFloat(item.unit_price).toLocaleString()}</span>
+                    <span className="font-semibold text-[#003078]">{formatINR(item.unit_price)}</span>
                   </div>
                 ))}
               </div>
@@ -446,11 +451,11 @@ function PaymentResultPage({ status, orderId, onNavigate }) {
             {order.items?.map((item, i) => (
               <div key={i} className="flex justify-between text-sm text-gray-600">
                 <span>{item.product_icon} {item.product_name}</span>
-                <span>£{parseFloat(item.unit_price).toLocaleString()}</span>
+                <span>{formatINR(item.unit_price)}</span>
               </div>
             ))}
             <div className="border-t mt-2 pt-2 flex justify-between font-bold text-[#003078]">
-              <span>Total</span><span>£{parseFloat(order.total_amount).toLocaleString()}</span>
+              <span>Total</span><span>{formatINR(order.total_amount)}</span>
             </div>
           </div>
         )}
@@ -544,7 +549,7 @@ function ProductCard({ product, onAddToCart }) {
         <h3 className="font-bold text-[#003078] text-lg mb-2">{product.name}</h3>
         <p className="text-gray-500 text-sm mb-4 flex-1">{product.description}</p>
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-3xl font-extrabold text-[#003078]">£{product.price.toLocaleString()}</span>
+          <span className="text-3xl font-extrabold text-[#003078]">{formatINR(product.price)}</span>
           <button onClick={() => onAddToCart(product)} className="bg-[#003078] hover:bg-[#004aad] text-white font-semibold px-5 py-2 rounded-xl transition text-sm">Add to Cart</button>
         </div>
       </div>
@@ -597,7 +602,7 @@ function CartModal({ cart, onClose, onRemove, onCheckout }) {
                   <div>
                     <div className="font-semibold text-[#003078] text-sm">{item.name}</div>
                     <div className="text-gray-400 text-xs">{item.category_display}</div>
-                    <div className="text-[#003078] font-bold mt-1">£{item.price.toLocaleString()} × {item.qty}</div>
+                    <div className="text-[#003078] font-bold mt-1">{formatINR(item.price)} × {item.qty}</div>
                   </div>
                   <button onClick={() => onRemove(item.id)} className="text-[#d4351c] hover:bg-red-50 rounded-lg p-2 transition">✕</button>
                 </div>
@@ -609,7 +614,7 @@ function CartModal({ cart, onClose, onRemove, onCheckout }) {
           <div className="p-6 border-t">
             <div className="flex justify-between items-center mb-4">
               <span className="font-semibold text-gray-600">Total</span>
-              <span className="text-2xl font-extrabold text-[#003078]">£{total.toLocaleString()}</span>
+              <span className="text-2xl font-extrabold text-[#003078]">{formatINR(total)}</span>
             </div>
             <button onClick={onCheckout} className="w-full bg-[#003078] hover:bg-[#004aad] text-white font-bold py-4 rounded-xl transition text-lg">Proceed to Payment →</button>
           </div>
@@ -682,7 +687,7 @@ function CheckoutModal({ cart, onClose, onSuccess }) {
           ))}
           <div className="bg-blue-50 rounded-xl p-4 flex justify-between items-center">
             <span className="text-gray-600 font-semibold">Total Amount</span>
-            <span className="text-2xl font-extrabold text-[#003078]">£{total.toLocaleString()}</span>
+            <span className="text-2xl font-extrabold text-[#003078]">{formatINR(total)}</span>
           </div>
           {error && <div className="bg-red-50 border border-red-200 text-[#d4351c] text-sm rounded-xl p-3 flex gap-2"><span>⚠️</span>{error}</div>}
           <button type="submit" disabled={loading}
