@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react'
+import { PolicyPage, POLICY_IDS } from './policies'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
 const INR_FORMATTER = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 })
@@ -742,10 +743,12 @@ function Footer({ config, onNavigate }) {
           <div className="text-left"><div className="font-bold">{config.site_name}</div><div className="text-xs text-blue-300">{config.site_tagline}</div></div>
         </button>
         <div className="text-blue-300 text-sm text-center">© {new Date().getFullYear()} {config.site_name}. All rights reserved. | {config.footer_text}</div>
-        <div className="flex gap-4 text-sm text-blue-300">
-          <a href="#" className="hover:text-white transition">Privacy</a>
-          <a href="#" className="hover:text-white transition">Terms</a>
-          <a href="#" className="hover:text-white transition">Refunds</a>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-blue-300">
+          <button onClick={() => onNavigate('terms')} className="hover:text-white transition">Terms</button>
+          <button onClick={() => onNavigate('privacy')} className="hover:text-white transition">Privacy</button>
+          <button onClick={() => onNavigate('refunds')} className="hover:text-white transition">Refunds</button>
+          <button onClick={() => onNavigate('returns')} className="hover:text-white transition">Returns</button>
+          <button onClick={() => onNavigate('shipping')} className="hover:text-white transition">Shipping</button>
         </div>
       </div>
     </footer>
@@ -821,6 +824,7 @@ function AppContent() {
   if (page === 'orders') return <MyOrdersPage onNavigate={navigate} />
   if (page === 'payment-success') return <PaymentResultPage status="success" orderId={paymentOrderId} onNavigate={navigate} />
   if (page === 'payment-cancelled') return <PaymentResultPage status="cancelled" onNavigate={navigate} />
+  if (POLICY_IDS.includes(page)) return <PolicyPage page={page} config={config} onNavigate={navigate} />
 
   return (
     <div className="min-h-screen font-sans">
