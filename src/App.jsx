@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react'
-import { PolicyPage, POLICY_IDS } from './policies'
+import { PolicyPage, POLICY_IDS, POLICY_META } from './policies'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
 const INR_FORMATTER = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 })
@@ -99,8 +99,10 @@ function Navbar({ siteName, tagline, cartCount, onCartClick, onNavigate }) {
   const { user, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropOpen, setDropOpen] = useState(false)
+  const [policiesOpen, setPoliciesOpen] = useState(false)
 
   const handleLogout = async () => { await logout(); onNavigate('home') }
+  const goToPolicy = (id) => { onNavigate(id); setPoliciesOpen(false); setMenuOpen(false) }
 
   return (
     <nav className="bg-[#003078] text-white shadow-lg sticky top-0 z-50">
@@ -113,11 +115,32 @@ function Navbar({ siteName, tagline, cartCount, onCartClick, onNavigate }) {
           </div>
         </button>
 
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+        <div className="hidden lg:flex items-center gap-5 text-sm font-medium">
           <button onClick={() => onNavigate('home')} className="hover:text-[#f3a712] transition">Home</button>
           <a href="#services" className="hover:text-[#f3a712] transition">Services</a>
           <a href="#products" className="hover:text-[#f3a712] transition">Packages</a>
           <a href="#contact" className="hover:text-[#f3a712] transition">Contact</a>
+          <div className="relative">
+            <button
+              onClick={() => setPoliciesOpen(!policiesOpen)}
+              className="flex items-center gap-1 hover:text-[#f3a712] transition"
+            >
+              Policies <span className="text-xs">▾</span>
+            </button>
+            {policiesOpen && (
+              <div className="absolute left-0 top-8 bg-white text-gray-800 rounded-2xl shadow-2xl w-52 py-2 z-50">
+                {POLICY_IDS.map((id) => (
+                  <button
+                    key={id}
+                    onClick={() => goToPolicy(id)}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm"
+                  >
+                    {POLICY_META[id].title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -150,16 +173,28 @@ function Navbar({ siteName, tagline, cartCount, onCartClick, onNavigate }) {
               <button onClick={() => onNavigate('register')} className="bg-[#f3a712] hover:bg-yellow-400 text-[#003078] font-bold px-4 py-2 rounded-lg text-sm transition">Register</button>
             </div>
           )}
-          <button className="md:hidden text-white text-2xl" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
+          <button className="lg:hidden text-white text-2xl" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
         </div>
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-[#002060] px-4 pb-4 flex flex-col gap-3 text-sm font-medium">
+        <div className="lg:hidden bg-[#002060] px-4 pb-4 flex flex-col gap-3 text-sm font-medium">
           <button onClick={() => { onNavigate('home'); setMenuOpen(false) }} className="text-left hover:text-[#f3a712]">Home</button>
-          <a href="#services" className="hover:text-[#f3a712]">Services</a>
-          <a href="#products" className="hover:text-[#f3a712]">Packages</a>
-          <a href="#contact" className="hover:text-[#f3a712]">Contact</a>
+          <a href="#services" onClick={() => setMenuOpen(false)} className="hover:text-[#f3a712]">Services</a>
+          <a href="#products" onClick={() => setMenuOpen(false)} className="hover:text-[#f3a712]">Packages</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)} className="hover:text-[#f3a712]">Contact</a>
+          <div className="border-t border-white/10 pt-3 mt-1">
+            <p className="text-xs text-blue-300 uppercase tracking-wide mb-2">Policies</p>
+            {POLICY_IDS.map((id) => (
+              <button
+                key={id}
+                onClick={() => goToPolicy(id)}
+                className="block w-full text-left py-1.5 hover:text-[#f3a712]"
+              >
+                {POLICY_META[id].title}
+              </button>
+            ))}
+          </div>
           {user ? (
             <>
               <button onClick={() => { onNavigate('profile'); setMenuOpen(false) }} className="text-left hover:text-[#f3a712]">👤 Profile</button>
@@ -736,19 +771,33 @@ function Contact({ config }) {
 
 function Footer({ config, onNavigate }) {
   return (
-    <footer className="bg-[#001a4d] text-white py-10 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <button onClick={() => onNavigate('home')} className="flex items-center gap-3">
-          <div className="bg-[#f3a712] rounded-full w-9 h-9 flex items-center justify-center font-bold text-[#003078]">UK</div>
-          <div className="text-left"><div className="font-bold">{config.site_name}</div><div className="text-xs text-blue-300">{config.site_tagline}</div></div>
+    <footer className="bg-[#001a4d] text-white py-12 px-4">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-left">
+          <div className="bg-[#f3a712] rounded-full w-9 h-9 flex items-center justify-center font-bold text-[#003078] shrink-0">UK</div>
+          <div>
+            <div className="font-bold">{config.site_name}</div>
+            <div className="text-xs text-blue-300 mt-0.5">{config.site_tagline}</div>
+          </div>
         </button>
-        <div className="text-blue-300 text-sm text-center">© {new Date().getFullYear()} {config.site_name}. All rights reserved. | {config.footer_text}</div>
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-blue-300">
-          <button onClick={() => onNavigate('terms')} className="hover:text-white transition">Terms</button>
-          <button onClick={() => onNavigate('privacy')} className="hover:text-white transition">Privacy</button>
-          <button onClick={() => onNavigate('refunds')} className="hover:text-white transition">Refunds</button>
-          <button onClick={() => onNavigate('returns')} className="hover:text-white transition">Returns</button>
-          <button onClick={() => onNavigate('shipping')} className="hover:text-white transition">Shipping</button>
+
+        <div>
+          <p className="font-bold text-sm mb-3">Policies</p>
+          <ul className="space-y-2 text-sm text-blue-300">
+            {POLICY_IDS.map((id) => (
+              <li key={id}>
+                <button onClick={() => onNavigate(id)} className="hover:text-white transition text-left">
+                  {POLICY_META[id].title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="text-blue-300 text-sm">
+          <p className="font-bold text-white text-sm mb-2">Legal Notice</p>
+          <p className="text-xs leading-relaxed">{config.footer_text}</p>
+          <p className="text-xs mt-4">© {new Date().getFullYear()} {config.site_name}. All rights reserved.</p>
         </div>
       </div>
     </footer>
